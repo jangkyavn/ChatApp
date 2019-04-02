@@ -41,8 +41,8 @@ namespace ChatApp3.Controllers
                     .Where(x => x.SenderName == User.Identity.Name && x.ReceiverName == receiver || 
                                 x.SenderName == receiver && x.ReceiverName == User.Identity.Name)
                     .OrderByDescending(x => x.DateCreated)
-                    .Skip((pageIndex - 1) * 20)
-                    .Take(20).ToList();
+                    .Skip((pageIndex - 1) * 10)
+                    .Take(10).ToList();
                 list.Reverse();
                 return Json(list, JsonRequestBehavior.AllowGet);
             }

@@ -140,7 +140,7 @@ ul.CTAs {
 
 #chatContainer {
     position: fixed;
-    top: 0;
+    height: 400px;
     bottom: 0;
     right: 0
 }

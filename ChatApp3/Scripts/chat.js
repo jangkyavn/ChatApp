@@ -169,7 +169,6 @@ var Message = {
     },
     loadMoreMessages: function (item) {
         var base = Message;
-
         if (item.IsStartDate) {
             loadMoreContainer.append(`<div class='messages messages--datecreated'>
                                                     ${moment(item.DateCreated).format('LL')}
@@ -297,7 +296,9 @@ var Message = {
                             scrollarea.scrollTop += (scrollarea.scrollHeight - lastScrollHeight);
                         }, 200);
                     } else {
-                        base.scrollDown();
+                        setTimeout(function () {
+                            base.scrollDown();
+                        }, 100);
                     }
                 }
             }
@@ -326,6 +327,7 @@ var Message = {
 
         conversation.scroll(function () {
             if (conversation.scrollTop() === conversation.height() - conversation.height()) {
+                loadMoreContainer.html('');
                 base.loadMessages(true);
             }
         });
