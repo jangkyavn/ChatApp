@@ -44,6 +44,16 @@
         border-bottom-left-radius: 15px;
     }
 
+.messages--received .message-image img {
+    float: left;
+    border-radius: 26px;
+    border: 1px solid #606770;
+}
+
+.messages--received .message-file a {
+    float: left;
+}
+
 .messages--sent .message {
     float: right;
     background-color: #1998e6;
@@ -52,13 +62,43 @@
     border-top-right-radius: 5px;
 }
 
-    .messages--sent .message:first-child {
-        border-top-right-radius: 15px;
-    }
+.messages--sent .message-image img {
+    float: right;
+    border-radius: 26px;
+    border: 1px solid #606770;
+}
+
+.messages--sent .message-file a {
+    float: right;
+}
+
+.messages--sent .message:first-child {
+  border-top-right-radius: 15px;
+}
 
     .messages--sent .message:last-child {
         border-bottom-right-radius: 15px;
     }
+
+.messages--datecreated {
+    text-align: center;
+    color: #606770;
+}
+
+.message-file {
+    display: inline-block;
+    margin-bottom: 2px;
+    clear: both;
+    padding: 0;
+    width: 100%;
+}
+
+.message-image {
+    display: inline-block;
+    margin-bottom: 2px;
+    clear: both;
+    padding: 0;
+}
 
 .message {
     display: inline-block;
@@ -156,6 +196,19 @@
     100% {
         transform: rotateZ(10deg);
     }
+}
+
+.preview-image {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+}
+
+.mfp-container .download {
+    color: #fff;
+    position: fixed;
+    top: 10px;
+    left: 10px;
 }
 
 .thumb-img, .thumb {

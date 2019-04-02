@@ -6,6 +6,7 @@ using Microsoft.AspNet.SignalR;
 
 namespace ChatApp3.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub<IChatHub>
     {
         public void SendMessage(string receiverName, string message)
@@ -13,16 +14,17 @@ namespace ChatApp3.Hubs
             using (var db = new DataContext())
             {
                 bool isStartDate = false;
-                if (db.Messages.Count() == 0)
+
+                var messages = db.Messages
+                    .Where(x => x.SenderName == Context.User.Identity.Name && x.ReceiverName == receiverName ||
+                                x.ReceiverName == Context.User.Identity.Name && x.SenderName == receiverName)
+                    .OrderByDescending(x => x.DateCreated);
+                if (messages.Count() == 0)
                 {
                     isStartDate = true;
                 }
 
-                var getLastDate = db.Messages
-                    .OrderByDescending(x => x.DateCreated)
-                    .Select(x => x.DateCreated)
-                    .FirstOrDefault();
-
+                var getLastDate = messages.Select(x => x.DateCreated).FirstOrDefault();
                 if ((DateTime.Now - getLastDate).Days > 0)
                 {
                     isStartDate = true;
@@ -41,8 +43,7 @@ namespace ChatApp3.Hubs
                 db.Messages.Add(mes);
                 db.SaveChanges();
 
-                var receiverId = db.Users.FirstOrDefault(x => x.UserName == receiverName).UserID;
-                Clients.User(receiverId.ToString()).ReceiveMessage(mes);
+                Clients.User(receiverName).ReceiveMessage(mes);
                 Clients.Caller.ReceiveMessage(mes);
             }
         }

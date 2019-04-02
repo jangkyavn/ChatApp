@@ -13,7 +13,7 @@ namespace ChatApp3.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201904010136141_InitialCreate"; }
+            get { return "201904020149310_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

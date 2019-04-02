@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/magnific-popup.css" rel="stylesheet" />
     <link href="~/Content/chat.css" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -40,7 +41,7 @@
 
                                 foreach (var item in users)
                                 {
-                                    <li data-id="@item.UserID" data-user="@item.UserID" class="user-row">
+                                    <li data-user="@item.UserName" class="user-row">
                                         <a href="#">@item.UserName</a>
                                     </li>
                                 }
@@ -48,27 +49,17 @@
                         </ul>
                     </div>
                     <div class="col-md-9 col-sm-9" style="height: 100%; border-left: 1px solid #ccc;">
-                        <div class="conversation" id="conversation">
-                            @*<div class="messages messages--received">
-                                    <div class="message">This codepen is an exemple of</div>
-                                    <div class="message">how to create the Facebook thumb up</div>
-                                </div>
-                                <div class="messages messages--sent">
-                                    <div class="message">Try to type</div>
-                                    <div class="message">or click the thumb up!</div>
-                                    <div class="message">;)</div>
-                                </div>
-                                <div class="messages messages--received">
-                                    <div class="message">Enjoy!</div>
-                                </div>*@
-                        </div>
+                        <div class="conversation" id="conversation"></div>
                         <div class="text-bar">
                             <form class="text-bar__field" id="form-message">
                                 <input type="text" placeholder="Nhập tin nhắn..." />
                             </form>
-                            <div class="text-bar__thumb">
-                                <i class="fa fa-paperclip fa-2x" style="color: #1998E6;"></i>
-                            </div>
+                            <a href="#" id="btn-send-file">
+                                <div class="text-bar__thumb">
+                                    <i class="fa fa-paperclip fa-2x" style="color: #1998E6;"></i>
+                                </div>
+                            </a>
+                            <input type="file" style="display:none;" id="fileUpload" />
                         </div>
                     </div>
                 </div>
@@ -86,6 +77,8 @@
         });
     </script>
     <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/moment-vi.js"></script>
+    <script src="~/Scripts/jquery.magnific-popup.js"></script>
     <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
     <script src="~/signalr/hubs"></script>
     <script src="~/Scripts/chat.js"></script>

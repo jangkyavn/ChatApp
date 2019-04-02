@@ -17,6 +17,10 @@ var Message = {
     },
     currentText: '',
     init: function () {
+        $('.zoom-image').magnificPopup({
+            type: 'image'
+        });
+
         var base = this;
         base.initSignalR();
 
@@ -28,23 +32,32 @@ var Message = {
         var chat = $.connection.chatHub;
         chat.client.receiveMessage = function (message) {
             var base = Message;
-            if ($('#hidUserName').val() === message.SenderName) {
-                base.createGroup(true);
-                base.createMessage(true, message.Content);
+            if (user.val() === message.SenderName && localStorage.getItem('receiver') === message.ReceiverName ||
+                user.val() === message.ReceiverName && localStorage.getItem('receiver') === message.SenderName) {
+                if (message.IsStartDate) {
+                    conversation.append(`<div class='messages messages--datecreated'>
+                                                    ${moment(message.DateCreated).format('LL')}
+                                                </div>`);
+                }
 
-                setTimeout(function () {
-                    base.scrollDown();
-                }, 50);
-            } else {
-                var isBottom = base.isBottom();
+                if (user.val() === message.SenderName) {
+                    base.createGroup(true);
+                    base.createMessage(true, message);
 
-                base.createGroup(false);
-                base.createMessage(false, message.Content);
-
-                if (isBottom) {
                     setTimeout(function () {
                         base.scrollDown();
                     }, 50);
+                } else {
+                    var isBottom = base.isBottom();
+
+                    base.createGroup(false);
+                    base.createMessage(false, message);
+
+                    if (isBottom) {
+                        setTimeout(function () {
+                            base.scrollDown();
+                        }, 50);
+                    }
                 }
             }
         };
@@ -68,19 +81,56 @@ var Message = {
     createMessage: function (isSender, message) {
         var base = this;
         if (isSender) {
-            lastSentMessages.append($('<div/>')
-                .addClass('message')
-                .text(message));
+            if (message.ContentType === 'text') {
+                lastSentMessages.append($('<div/>')
+                    .addClass('message')
+                    .text(message.Content));
+            } else if (message.ContentType === 'image') {
+                lastSentMessages.append($('<div/>')
+                    .addClass('message-image')
+                    .html(`<a class="zoom-image" href="/Uploaded/${message.Content}">
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" />
+                           </a>`));
+            } else {
+                lastSentMessages.append($('<div/>')
+                    .addClass('message-file')
+                    .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}">${message.Content}</a>`));
+            }
         } else {
-            lastReceivedMessages.append($('<div/>')
-                .addClass('message')
-                .text(message));
+            if (message.ContentType === 'text') {
+                lastReceivedMessages.append($('<div/>')
+                    .addClass('message')
+                    .text(message.Content));
+            } else if (message.ContentType === 'image') {
+                lastReceivedMessages.append($('<div/>')
+                    .addClass('message-image')
+                    .html(`<a class="zoom-image" href="/Uploaded/${message.Content}">
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" />
+                           </a>`));
+            } else {
+                lastReceivedMessages.append($('<div/>')
+                    .addClass('message-file')
+                    .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}">${message.Content}</a>`));
+            }
         }
+
+        $('.zoom-image').magnificPopup({
+            items: {
+                src: $(`<img src="/Uploaded/${message.Content}" class='preview-image' />
+                        <a class="download" href="/Uploaded/${message.Content}" download="${message.Content}">
+                            <i class="fa fa-download" aria-hidden="true"></i> Tải xuống
+                        </a>`),
+                type: 'inline'
+            },
+            closeOnBgClick: false,
+            closeBtnInside: false
+        });
     },
     createGroup: function (isSender) {
         if (isSender) {
             if (conversation.html()) {
-                if ($('.messages:last-child').hasClass('messages--received')) {
+                if ($('.messages:last-child').hasClass('messages--received') ||
+                    $('.messages:last-child').hasClass('messages--datecreated')) {
                     conversation.append($('<div/>')
                         .addClass('messages messages--sent'));
                     lastSentMessages = $('.messages--sent:last-child');
@@ -92,7 +142,8 @@ var Message = {
             }
         } else {
             if (conversation.html()) {
-                if ($('.messages:last-child').hasClass('messages--sent')) {
+                if ($('.messages:last-child').hasClass('messages--sent') ||
+                    $('.messages:last-child').hasClass('messages--datecreated')) {
                     conversation.append($('<div/>')
                         .addClass('messages messages--received'));
                     lastReceivedMessages = $('.messages--received:last-child');
@@ -118,9 +169,17 @@ var Message = {
     },
     loadMoreMessages: function (item) {
         var base = Message;
-        if ($('#hidUserName').val() === item.SenderName) {
+
+        if (item.IsStartDate) {
+            loadMoreContainer.append(`<div class='messages messages--datecreated'>
+                                                    ${moment(item.DateCreated).format('LL')}
+                                                </div>`);
+        }
+
+        if (user.val() === item.SenderName) {
             if (loadMoreContainer.html()) {
-                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--received')) {
+                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--received') ||
+                    loadMoreContainer.find('.messages:last-child').hasClass('messages--datecreated')) {
                     loadMoreContainer.append($('<div/>')
                         .addClass('messages messages--sent'));
                 }
@@ -129,13 +188,28 @@ var Message = {
                     .addClass('messages messages--sent'));
             }
 
-            loadMoreContainer.find('.messages--sent:last-child')
-                .append($('<div/>')
-                    .addClass('message')
-                    .text(item.Content));
+            if (item.ContentType === 'text') {
+                loadMoreContainer.find('.messages--sent:last-child')
+                    .append($('<div/>')
+                        .addClass('message')
+                        .text(item.Content));
+            } else if (item.ContentType === 'image') {
+                loadMoreContainer.find('.messages--sent:last-child')
+                    .append($('<div/>')
+                        .addClass('message-image')
+                        .html(`<a class="zoom-image" href="#" data-content="${item.Content}">
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${item.Content}" />
+                           </a>`));
+            } else {
+                loadMoreContainer.find('.messages--sent:last-child')
+                    .append($('<div/>')
+                        .addClass('message-file')
+                        .html(`<a href="/Uploaded/${item.Content}" download="${item.Content}">${item.Content}</a>`));
+            }
         } else {
             if (loadMoreContainer.html()) {
-                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--sent')) {
+                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--sent') ||
+                    loadMoreContainer.find('.messages:last-child').hasClass('messages--datecreated')) {
                     loadMoreContainer.append($('<div/>')
                         .addClass('messages messages--received'));
                 }
@@ -144,14 +218,29 @@ var Message = {
                     .addClass('messages messages--received'));
             }
 
-            loadMoreContainer.find('.messages--received:last-child')
-                .append($('<div/>')
-                    .addClass('message')
-                    .text(item.Content));
+            if (item.ContentType === 'text') {
+                loadMoreContainer.find('.messages--received:last-child')
+                    .append($('<div/>')
+                        .addClass('message')
+                        .text(item.Content));
+            } else if (item.ContentType === 'image') {
+                loadMoreContainer.find('.messages--received:last-child')
+                    .append($('<div/>')
+                        .addClass('message-image')
+                        .html(`<a class="zoom-image" href="#" data-content="${item.Content}">
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${item.Content}" />
+                           </a>`));
+            } else {
+                loadMoreContainer.find('.messages--received:last-child')
+                    .append($('<div/>')
+                        .addClass('message-file')
+                        .html(`<a href="/Uploaded/${item.Content}" download="${item.Content}">${item.Content}</a>`));
+            }
         }
     },
     loadMessages: function (isloadMore = false) {
         var receiverStorage = localStorage.getItem('receiver');
+
         if (!receiverStorage) {
             $('.user-row').removeClass('user-message-active');
             var firstUser = $('.user-row:first-child');
@@ -168,7 +257,6 @@ var Message = {
             });
         }
 
-        receiverStorage = localStorage.getItem('receiver');
         var base = this;
         $.ajax({
             url: '/Home/GetMessages',
@@ -185,12 +273,18 @@ var Message = {
                         if (isloadMore === true) {
                             base.loadMoreMessages(item);
                         } else {
-                            if ($('#hidUserName').val() === item.SenderName) {
+                            if (item.IsStartDate) {
+                                conversation.append(`<div class='messages messages--datecreated'>
+                                                    ${moment(item.DateCreated).format('LL')}
+                                                </div>`);
+                            }
+
+                            if (user.val() === item.SenderName) {
                                 base.createGroup(true);
-                                base.createMessage(true, item.Content);
+                                base.createMessage(true, item);
                             } else {
                                 base.createGroup(false);
-                                base.createMessage(false, item.Content);
+                                base.createMessage(false, item);
                             }
                         }
                     });
@@ -220,8 +314,6 @@ var Message = {
             }
 
             localStorage.setItem('receiver', receiver);
-            console.log(localStorage.getItem('receiver'));
-
             base.cachedObj.pageIndex = 1;
 
             $('.user-row').removeClass('user-message-active');
@@ -236,6 +328,49 @@ var Message = {
             if (conversation.scrollTop() === conversation.height() - conversation.height()) {
                 base.loadMessages(true);
             }
+        });
+
+        $('body').on('click', '.zoom-image', function (e) {
+            e.preventDefault();
+            var content = $(this).data('content');
+            $('.zoom-image').magnificPopup({
+                items: {
+                    src: $(`<img src="/Uploaded/${content}" class='preview-image' />
+                        <a class="download" href="/Uploaded/${content}" download="${content}">
+                            <i class="fa fa-download" aria-hidden="true"></i> Tải xuống
+                        </a>`),
+                    type: 'inline'
+                },
+                closeOnBgClick: false,
+                closeBtnInside: false
+            });
+        });
+
+        $('#btn-send-file').on('click', function (e) {
+            e.preventDefault();
+            $('#fileUpload').val(null);
+            $('#fileUpload').click();
+        });
+
+        $('#fileUpload').on('change', function () {
+            var fileUpload = $(this).get(0);
+            var files = fileUpload.files;
+            var data = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                data.append(files[i].name, files[i]);
+            }
+
+            $.ajax({
+                url: '/Home/Upload?receiverName=' + localStorage.getItem('receiver'),
+                type: 'POST',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    ////
+                }
+            });
         });
     }
 };
