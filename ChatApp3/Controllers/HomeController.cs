@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ChatApp3.Models;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace ChatApp3.Controllers
 {
@@ -13,18 +12,35 @@ namespace ChatApp3.Controllers
             return View();
         }
 
-        public ActionResult About()
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Login()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult Login(string userName)
         {
-            ViewBag.Message = "Your contact page.";
+            FormsAuthentication.SetAuthCookie(userName, true);
+            return Json(true);
+        }
 
-            return View();
+        [HttpGet]
+        public ActionResult GetMessages(string receiver, int pageIndex)
+        {
+            using (var db = new DataContext())
+            {
+                var list = db.Messages
+                    .Where(x => x.SenderName == User.Identity.Name && x.ReceiverName == receiver || 
+                                x.SenderName == receiver && x.ReceiverName == User.Identity.Name)
+                    .OrderByDescending(x => x.DateCreated)
+                    .Skip((pageIndex - 1) * 20)
+                    .Take(20).ToList();
+                list.Reverse();
+                return Json(list, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -1,42 +1,94 @@
-﻿<!DOCTYPE html>
+﻿@using ChatApp3.Models
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/chat.css" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
+    <input type="hidden" id="hidUserName" value="@User.Identity.Name" />
+
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <!-- Page Content Holder -->
+        <div id="content">
+            @RenderBody()
         </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+        <div id="chatContainer">
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fa fa-comment" aria-hidden="true"></i>
+            </button>
+            <div id="loadMoreContainer" style="display: none;"></div>
+            <nav id="sidebar">
+                <div class="sidebar-header" style="height: 10%;">
+                    <h3>Chat</h3>
+                </div>
+                <div class="row" style="height: 90%;">
+                    <div class="col-md-3 col-sm-3" style="height: 100%; padding: 0 0 0 15px;">
+                        <ul id="listUser">
+                            @using (var db = new DataContext())
+                            {
+                                var users = db.Users
+                                    .Where(x => !x.UserName.ToUpper().Equals(User.Identity.Name))
+                                    .OrderBy(x => x.UserName).ToList();
+
+                                foreach (var item in users)
+                                {
+                                    <li data-id="@item.UserID" data-user="@item.UserID" class="user-row">
+                                        <a href="#">@item.UserName</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-md-9 col-sm-9" style="height: 100%; border-left: 1px solid #ccc;">
+                        <div class="conversation" id="conversation">
+                            @*<div class="messages messages--received">
+                                    <div class="message">This codepen is an exemple of</div>
+                                    <div class="message">how to create the Facebook thumb up</div>
+                                </div>
+                                <div class="messages messages--sent">
+                                    <div class="message">Try to type</div>
+                                    <div class="message">or click the thumb up!</div>
+                                    <div class="message">;)</div>
+                                </div>
+                                <div class="messages messages--received">
+                                    <div class="message">Enjoy!</div>
+                                </div>*@
+                        </div>
+                        <div class="text-bar">
+                            <form class="text-bar__field" id="form-message">
+                                <input type="text" placeholder="Nhập tin nhắn..." />
+                            </form>
+                            <div class="text-bar__thumb">
+                                <i class="fa fa-paperclip fa-2x" style="color: #1998E6;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/chat.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

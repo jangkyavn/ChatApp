@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My ASP.NET Application</title>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/chat.css" rel="stylesheet" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">User</h4>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" placeholder="Vui lòng nhập tên" id="txtUserName" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnOK" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myModal").modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: true
+            });
+
+            $('#btnOK').click(function () {
+                var userName = $('#txtUserName').val();
+                if (userName) {
+                    $.ajax({
+                        url: '/Home/Login',
+                        type: 'POST',
+                        data: { userName },
+                        success: function (response) {
+                            if (response) {
+                                window.location.href = '/Home/Index'
+                            }
+                        }
+                    });
+                }
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
