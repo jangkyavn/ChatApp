@@ -34,12 +34,6 @@ var Message = {
             var base = Message;
             if (user.val() === message.SenderName && localStorage.getItem('receiver') === message.ReceiverName ||
                 user.val() === message.ReceiverName && localStorage.getItem('receiver') === message.SenderName) {
-                if (message.IsStartDate) {
-                    conversation.append(`<div class='messages messages--datecreated'>
-                                                    ${moment(message.DateCreated).format('LL')}
-                                                </div>`);
-                }
-
                 if (user.val() === message.SenderName) {
                     base.createGroup(true);
                     base.createMessage(true, message);
@@ -84,33 +78,39 @@ var Message = {
             if (message.ContentType === 'text') {
                 lastSentMessages.append($('<div/>')
                     .addClass('message')
-                    .text(message.Content));
+                    .html(`<div data-toggle="tooltip"
+                                title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}">
+                                ${message.Content}
+                            </div>`));
             } else if (message.ContentType === 'image') {
                 lastSentMessages.append($('<div/>')
                     .addClass('message-image')
                     .html(`<a class="zoom-image" href="/Uploaded/${message.Content}">
-                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" />
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}" />
                            </a>`));
             } else {
                 lastSentMessages.append($('<div/>')
                     .addClass('message-file')
-                    .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}">${message.Content}</a>`));
+                    .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}">${message.Content}</a>`));
             }
         } else {
             if (message.ContentType === 'text') {
                 lastReceivedMessages.append($('<div/>')
                     .addClass('message')
-                    .text(message.Content));
+                    .html(`<div data-toggle="tooltip"
+                                title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}">
+                                ${message.Content}
+                            </div>`));
             } else if (message.ContentType === 'image') {
                 lastReceivedMessages.append($('<div/>')
                     .addClass('message-image')
                     .html(`<a class="zoom-image" href="/Uploaded/${message.Content}">
-                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" />
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}" />
                            </a>`));
             } else {
                 lastReceivedMessages.append($('<div/>')
                     .addClass('message-file')
-                    .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}">${message.Content}</a>`));
+                    .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}">${message.Content}</a>`));
             }
         }
 
@@ -124,6 +124,10 @@ var Message = {
             },
             closeOnBgClick: false,
             closeBtnInside: false
+        });
+
+        $('[data-toggle="tooltip"]').tooltip({
+            placement: 'left'
         });
     },
     createGroup: function (isSender) {
@@ -169,12 +173,6 @@ var Message = {
     },
     loadMoreMessages: function (item) {
         var base = Message;
-        if (item.IsStartDate) {
-            loadMoreContainer.append(`<div class='messages messages--datecreated'>
-                                                    ${moment(item.DateCreated).format('LL')}
-                                                </div>`);
-        }
-
         if (user.val() === item.SenderName) {
             if (loadMoreContainer.html()) {
                 if (loadMoreContainer.find('.messages:last-child').hasClass('messages--received') ||
@@ -191,19 +189,22 @@ var Message = {
                 loadMoreContainer.find('.messages--sent:last-child')
                     .append($('<div/>')
                         .addClass('message')
-                        .text(item.Content));
+                        .html(`<div data-toggle="tooltip"
+                                title="${moment(item.DateCreated).format('HH:mm Do MMMM, YYYY')}">
+                                ${item.Content}
+                            </div>`));
             } else if (item.ContentType === 'image') {
                 loadMoreContainer.find('.messages--sent:last-child')
                     .append($('<div/>')
                         .addClass('message-image')
                         .html(`<a class="zoom-image" href="#" data-content="${item.Content}">
-                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${item.Content}" />
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${item.Content}" data-toggle="tooltip" title="${moment(item.DateCreated).format('HH:mm Do MMMM, YYYY')}" />
                            </a>`));
             } else {
                 loadMoreContainer.find('.messages--sent:last-child')
                     .append($('<div/>')
                         .addClass('message-file')
-                        .html(`<a href="/Uploaded/${item.Content}" download="${item.Content}">${item.Content}</a>`));
+                        .html(`<a href="/Uploaded/${item.Content}" download="${item.Content}" data-toggle="tooltip" title="${moment(item.DateCreated).format('HH:mm Do MMMM, YYYY')}">${item.Content}</a>`));
             }
         } else {
             if (loadMoreContainer.html()) {
@@ -221,19 +222,22 @@ var Message = {
                 loadMoreContainer.find('.messages--received:last-child')
                     .append($('<div/>')
                         .addClass('message')
-                        .text(item.Content));
+                        .html(`<div data-toggle="tooltip"
+                                title="${moment(item.DateCreated).format('HH:mm Do MMMM, YYYY')}">
+                                ${item.Content}
+                            </div>`));
             } else if (item.ContentType === 'image') {
                 loadMoreContainer.find('.messages--received:last-child')
                     .append($('<div/>')
                         .addClass('message-image')
                         .html(`<a class="zoom-image" href="#" data-content="${item.Content}">
-                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${item.Content}" />
+                                <img class="msg-image" style="width: 30%;" src="/Uploaded/${item.Content}" data-toggle="tooltip" title="${moment(item.DateCreated).format('HH:mm Do MMMM, YYYY')}" />
                            </a>`));
             } else {
                 loadMoreContainer.find('.messages--received:last-child')
                     .append($('<div/>')
                         .addClass('message-file')
-                        .html(`<a href="/Uploaded/${item.Content}" download="${item.Content}">${item.Content}</a>`));
+                        .html(`<a href="/Uploaded/${item.Content}" download="${item.Content}" data-toggle="tooltip" title="${moment(item.DateCreated).format('HH:mm Do MMMM, YYYY')}">${item.Content}</a>`));
             }
         }
     },
@@ -272,12 +276,6 @@ var Message = {
                         if (isloadMore === true) {
                             base.loadMoreMessages(item);
                         } else {
-                            if (item.IsStartDate) {
-                                conversation.append(`<div class='messages messages--datecreated'>
-                                                    ${moment(item.DateCreated).format('LL')}
-                                                </div>`);
-                            }
-
                             if (user.val() === item.SenderName) {
                                 base.createGroup(true);
                                 base.createMessage(true, item);
@@ -293,6 +291,9 @@ var Message = {
                         var lastScrollHeight = scrollarea.scrollHeight;
                         setTimeout(function () {
                             conversation.prepend(loadMoreContainer.html());
+                            $('[data-toggle="tooltip"]').tooltip({
+                                placement: 'left'
+                            });
                             scrollarea.scrollTop += (scrollarea.scrollHeight - lastScrollHeight);
                         }, 200);
                     } else {

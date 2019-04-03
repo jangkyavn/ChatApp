@@ -13,23 +13,6 @@ namespace ChatApp3.Hubs
         {
             using (var db = new DataContext())
             {
-                bool isStartDate = false;
-
-                var messages = db.Messages
-                    .Where(x => x.SenderName == Context.User.Identity.Name && x.ReceiverName == receiverName ||
-                                x.ReceiverName == Context.User.Identity.Name && x.SenderName == receiverName)
-                    .OrderByDescending(x => x.DateCreated);
-                if (messages.Count() == 0)
-                {
-                    isStartDate = true;
-                }
-
-                var getLastDate = messages.Select(x => x.DateCreated).FirstOrDefault();
-                if ((DateTime.Now - getLastDate).Days > 0)
-                {
-                    isStartDate = true;
-                }
-
                 var mes = new Message()
                 {
                     MessageID = Guid.NewGuid(),
@@ -37,7 +20,6 @@ namespace ChatApp3.Hubs
                     DateCreated = DateTime.Now,
                     SenderName = Context.User.Identity.Name,
                     ReceiverName = receiverName,
-                    IsStartDate = isStartDate,
                     ContentType = "text"
                 };
                 db.Messages.Add(mes);

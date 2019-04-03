@@ -74,30 +74,12 @@ namespace ChatApp3.Controllers
 
                         using (var db = new DataContext())
                         {
-                            bool isStartDate = false;
-
-                            var messages = db.Messages
-                                .Where(x => x.SenderName == User.Identity.Name && x.ReceiverName == receiverName ||
-                                        x.ReceiverName == User.Identity.Name && x.SenderName == receiverName)
-                                .OrderByDescending(x => x.DateCreated);
-                            if (messages.Count() == 0)
-                            {
-                                isStartDate = true;
-                            }
-
-                            var getLastDate = messages.Select(x => x.DateCreated).FirstOrDefault();
-                            if ((DateTime.Now - getLastDate).Days > 0)
-                            {
-                                isStartDate = true;
-                            }
-
                             var message = new Message();
                             message.MessageID = Guid.NewGuid();
                             message.Content = fileName;
                             message.DateCreated = DateTime.Now;
                             message.SenderName = User.Identity.Name;
                             message.ReceiverName = receiverName;
-                            message.IsStartDate = isStartDate;
                             message.ContentType = isImage ? "image" : "file";
 
                             db.Messages.Add(message);

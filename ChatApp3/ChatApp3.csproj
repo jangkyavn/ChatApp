@@ -161,6 +161,10 @@
     <Compile Include="Migrations\201904020149310_InitialCreate.Designer.cs">
       <DependentUpon>201904020149310_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904030326017_DeleteColumn.cs" />
+    <Compile Include="Migrations\201904030326017_DeleteColumn.Designer.cs">
+      <DependentUpon>201904030326017_DeleteColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\Message.cs" />
@@ -231,6 +235,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201904020149310_InitialCreate.resx">
       <DependentUpon>201904020149310_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904030326017_DeleteColumn.resx">
+      <DependentUpon>201904030326017_DeleteColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
