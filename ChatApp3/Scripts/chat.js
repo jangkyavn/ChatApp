@@ -117,8 +117,7 @@ var Message = {
     createGroup: function (isSender) {
         if (isSender) {
             if (conversation.html()) {
-                if ($('.messages:last-child').hasClass('messages--received') ||
-                    $('.messages:last-child').hasClass('messages--datecreated')) {
+                if ($('.messages:last-child').hasClass('messages--received')) {
                     conversation.append($('<div/>')
                         .addClass('messages messages--sent'));
                     lastSentMessages = $('.messages--sent:last-child');
@@ -130,8 +129,7 @@ var Message = {
             }
         } else {
             if (conversation.html()) {
-                if ($('.messages:last-child').hasClass('messages--sent') ||
-                    $('.messages:last-child').hasClass('messages--datecreated')) {
+                if ($('.messages:last-child').hasClass('messages--sent')) {
                     conversation.append($('<div/>')
                         .addClass('messages messages--received'));
                     lastReceivedMessages = $('.messages--received:last-child');
@@ -159,8 +157,7 @@ var Message = {
         var base = Message;
         if (user.val() === item.SenderName) {
             if (loadMoreContainer.html()) {
-                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--received') ||
-                    loadMoreContainer.find('.messages:last-child').hasClass('messages--datecreated')) {
+                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--received')) {
                     loadMoreContainer.append($('<div/>')
                         .addClass('messages messages--sent'));
                 }
@@ -192,8 +189,7 @@ var Message = {
             }
         } else {
             if (loadMoreContainer.html()) {
-                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--sent') ||
-                    loadMoreContainer.find('.messages:last-child').hasClass('messages--datecreated')) {
+                if (loadMoreContainer.find('.messages:last-child').hasClass('messages--sent')) {
                     loadMoreContainer.append($('<div/>')
                         .addClass('messages messages--received'));
                 }
