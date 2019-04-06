@@ -292,8 +292,6 @@ var Message = {
         var base = this;
 
         $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-
             $(this).html('');
             if ($('#sidebar').hasClass('active')) {
                 $(this).html('<i class="fa fa-angle-double-right fa-2x" aria-hidden="true"></i>');

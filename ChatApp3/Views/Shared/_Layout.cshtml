@@ -69,6 +69,13 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
     <script src="~/Scripts/moment.min.js"></script>
     <script src="~/Scripts/moment-vi.js"></script>
     <script src="~/Scripts/jquery.magnific-popup.js"></script>
