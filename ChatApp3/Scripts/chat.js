@@ -17,10 +17,6 @@ var Message = {
     },
     currentText: '',
     init: function () {
-        $('.zoom-image').magnificPopup({
-            type: 'image'
-        });
-
         var base = this;
         base.initSignalR();
 
@@ -85,7 +81,7 @@ var Message = {
             } else if (message.ContentType === 'image') {
                 lastSentMessages.append($('<div/>')
                     .addClass('message-image')
-                    .html(`<a class="zoom-image" href="/Uploaded/${message.Content}">
+                    .html(`<a class="zoom-image" href="/Uploaded/${message.Content}" data-content="${message.Content}">
                                 <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}" />
                            </a>`));
             } else {
@@ -104,7 +100,7 @@ var Message = {
             } else if (message.ContentType === 'image') {
                 lastReceivedMessages.append($('<div/>')
                     .addClass('message-image')
-                    .html(`<a class="zoom-image" href="/Uploaded/${message.Content}">
+                    .html(`<a class="zoom-image" href="/Uploaded/${message.Content}" data-content="${message.Content}">
                                 <img class="msg-image" style="width: 30%;" src="/Uploaded/${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}" />
                            </a>`));
             } else {
@@ -113,18 +109,6 @@ var Message = {
                     .html(`<a href="/Uploaded/${message.Content}" download="${message.Content}" data-toggle="tooltip" title="${moment(message.DateCreated).format('HH:mm Do MMMM, YYYY')}">${message.Content}</a>`));
             }
         }
-
-        $('.zoom-image').magnificPopup({
-            items: {
-                src: $(`<img src="/Uploaded/${message.Content}" class='preview-image' />
-                        <a class="download" href="/Uploaded/${message.Content}" download="${message.Content}">
-                            <i class="fa fa-download" aria-hidden="true"></i> Tải xuống
-                        </a>`),
-                type: 'inline'
-            },
-            closeOnBgClick: false,
-            closeBtnInside: false
-        });
 
         $('[data-toggle="tooltip"]').tooltip({
             placement: 'left'
@@ -308,6 +292,15 @@ var Message = {
     registerEvents: function () {
         var base = this;
 
+        $('#sidebarCollapse').on('click', function () {
+            $(this).html('');
+            if ($('#sidebar').hasClass('active')) {
+                $(this).html('<i class="fa fa-angle-double-right fa-2x" aria-hidden="true"></i>');
+            } else {
+                $(this).html('<i class="fa fa-angle-double-left fa-2x" aria-hidden="true"></i>');
+            }
+        });
+
         $('.user-row').on('click', function (e) {
             e.preventDefault();
             var receiver = $(this).data('user');
@@ -336,7 +329,7 @@ var Message = {
         $('body').on('click', '.zoom-image', function (e) {
             e.preventDefault();
             var content = $(this).data('content');
-            $('.zoom-image').magnificPopup({
+            $.magnificPopup.open({
                 items: {
                     src: $(`<img src="/Uploaded/${content}" class='preview-image' />
                         <a class="download" href="/Uploaded/${content}" download="${content}">
