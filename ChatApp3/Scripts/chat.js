@@ -253,7 +253,6 @@ var Message = {
                 pageIndex: base.cachedObj.pageIndex++
             },
             success: function (response) {
-                console.log(response);
                 if (response.length > 0) {
                     var html = '';
                     $.each(response, function (idx, item) {
@@ -293,6 +292,8 @@ var Message = {
         var base = this;
 
         $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+
             $(this).html('');
             if ($('#sidebar').hasClass('active')) {
                 $(this).html('<i class="fa fa-angle-double-right fa-2x" aria-hidden="true"></i>');
