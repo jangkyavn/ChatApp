@@ -240,6 +240,10 @@ var Message = {
             });
         }
 
+        if (isloadMore) {
+            conversation.prepend('<div class="loader"></div>');
+        }
+
         var base = this;
         $.ajax({
             url: '/Home/GetMessages',
@@ -269,6 +273,7 @@ var Message = {
                         var scrollarea = document.getElementById('conversation');
                         var lastScrollHeight = scrollarea.scrollHeight;
                         setTimeout(function () {
+                            $('div.loader').remove();
                             conversation.prepend(loadMoreContainer.html());
                             $('[data-toggle="tooltip"]').tooltip({
                                 placement: 'left'
@@ -279,6 +284,10 @@ var Message = {
                         setTimeout(function () {
                             base.scrollDown();
                         }, 100);
+                    }
+                } else {
+                    if (isloadMore) {
+                        $('div.loader').remove();
                     }
                 }
             }
