@@ -31,7 +31,7 @@
                     <h3>Chat</h3>
                 </div>
                 <div class="row" style="height: 85%;">
-                    <div class="col-md-3 col-sm-3" style="height: 100%; padding: 0 0 0 15px;">
+                    <div class="col-md-3 col-sm-3" id="listUsersMessage">
                         <ul id="listUser">
                             @using (var db = new DataContext())
                             {
@@ -41,8 +41,10 @@
 
                                 foreach (var item in users)
                                 {
-                                    <li data-user="@item.UserName" class="user-row">
-                                        <a href="#">@item.UserName</a>
+                                    var userName = item.UserName.Length > 8 ? item.UserName.Substring(0, 8) + "..." : item.UserName;
+
+                                    <li data-user="@item.UserName" class="user-row" title="@item.UserName">
+                                        <a href="#">@userName</a>
                                     </li>
                                 }
                             }

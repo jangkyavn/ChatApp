@@ -117,24 +117,11 @@ a[aria-expanded="true"]::before {
     content: '\e260';
 }
 
-
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
     background: #6d7fcc;
 }
-
-ul.CTAs {
-    padding: 20px;
-}
-
-    ul.CTAs a {
-        text-align: center;
-        font-size: 0.9em !important;
-        display: block;
-        border-radius: 5px;
-        margin-bottom: 5px;
-    }
 
 #chatContainer {
     position: fixed;
@@ -193,14 +180,6 @@ a {
     clear: both;
     height: 0;
     visibility: hidden;
-}
-
-.screen {
-    background-color: #fff;
-    height: 400px;
-    width: 300px;
-    margin: 0 auto;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, .2);
 }
 
 .conversation {
@@ -355,17 +334,24 @@ a {
     animation: wiggle2 0.2s ease infinite;
 }
 
+#listUsersMessage {
+    height: 100%;
+    padding: 0 0 0 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 /* scollbar */
-.conversation::-webkit-scrollbar {
+.conversation::-webkit-scrollbar, #listUsersMessage::-webkit-scrollbar {
     width: 12px;
 }
 
-.conversation::-webkit-scrollbar-track {
+.conversation::-webkit-scrollbar-track, #listUsersMessage::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
     /*border-radius: 10px;*/
 }
 
-.conversation::-webkit-scrollbar-thumb {
+.conversation::-webkit-scrollbar-thumb, #listUsersMessage::-webkit-scrollbar-thumb {
     background: #1998E6;
     /*border-radius: 10px;*/
 }

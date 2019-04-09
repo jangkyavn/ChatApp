@@ -9,8 +9,6 @@ var textForm = $('#form-message');
 var user = $('#hidUserName');
 var loadMoreContainer = $('#loadMoreContainer');
 
-var scrollTop = $(window).scrollTop();
-
 var Message = {
     cachedObj: {
         pageIndex: 1
@@ -240,7 +238,7 @@ var Message = {
             });
         }
 
-        if (isloadMore) {
+        if (isloadMore === true) {
             conversation.prepend('<div class="loader"></div>');
         }
 
